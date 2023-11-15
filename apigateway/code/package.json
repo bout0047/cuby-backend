@@ -1,0 +1,23 @@
+{
+  "name": "cuby-backend",
+  "version": "1.0.0",
+  "description": "API Gateway for Cuby",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "./node_modules/nodemon/bin/nodemon.js start.js",
+    "dev win": "./node_modules/.bin/nodemon start.js"
+  },
+  "author": "Team 8",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.6",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
