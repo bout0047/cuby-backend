@@ -1,16 +1,19 @@
 version: '3.8'
 services:
-  appointments:
+  events:
     container_name: events
     build: ./events
     volumes:
       - ./events/code:/usr/src/app
+      - ./events/code/db:/usr/src/app/db
     networks:
       - mscuby
     ports:
       - "3010:3010"
     working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
+    environment:
+      - "sqlite:/usr/src/app/db/database.sqlite"
+    command: bash -c "npm install && cd db && npx sequelize db:migrate && cd .. && npm run dev "
   gateway:
     container_name: apigateway
     build: ./apigateway

@@ -11,5 +11,4 @@ const eventProxy = createProxyMiddleware({
 
 router.use('/events', cors(), eventProxy);
 
-
 export default router;
