@@ -12,6 +12,7 @@ const eventProxy = createProxyMiddleware({
 router.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
 router.use('/events', cors(), eventProxy);
 
 export default router;

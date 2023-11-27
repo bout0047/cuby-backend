@@ -10,8 +10,8 @@ services:
     ports:
       - "3010:3010"
     working_dir: /usr/src/app
-    environment:
-      - "sqlite:/usr/src/app/db/database.sqlite"
+    env_file:
+      - ./events/code/.env
     command: bash -c "npm install && npm run dev "
   gateway:
     container_name: apigateway
