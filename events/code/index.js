@@ -1,21 +1,14 @@
 import express from 'express';
-import cors from 'cors';
-import eventsRouter from './routes/eventRoutes.js';
+import { pool } from './db/index.js';
+import eventsRouter from './routes/events.mjs';
 
 const app = express();
-const PORT = process.env.PORT || 3010;
+const port = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
 app.use(express.json());
-
-// Routes
-app.use('/', (req, res) => {
-  res.json('hi');
-});
 
 app.use('/events', eventsRouter);
 
-app.listen(PORT, () => {
-  console.log(`Events is running on port ${PORT}`);
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
 });

@@ -1,5 +1,5 @@
 {
-  "name": "ex1",
+  "name": "events-ms",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,14 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.17.1",
-    "faker": "^5.5.3",
-    "sequelize": "^6.35.1",
-    "sequelize-cli": "^6.6.2",
-    "sqlite3": "^5.1.6"
+    "knex": "^3.0.1",
+    "pg": "^8.11.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
