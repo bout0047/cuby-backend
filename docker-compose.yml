@@ -1,11 +1,10 @@
 version: '3.8'
 services:
   events:
-    container_name: events
+    container_name: events-ms
     build: ./events
     volumes:
       - ./events/code:/usr/src/app
-      - ./events/code/db:/usr/src/app/db
     networks:
       - mscuby
     ports:

@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "./node_modules/nodemon/bin/nodemon.js index.js",
+    "dev": "nodemon index.js",
     "dev win": "./node_modules/.bin/nodemon index.js"
   },
   "author": "",
