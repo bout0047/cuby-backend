@@ -5,7 +5,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 const router = express.Router();
 
 const eventProxy = createProxyMiddleware({
-  target: 'http://localhost:3010',
+  target: 'http://events-ms:3010',
   changeOrigin: true,
 });
 
