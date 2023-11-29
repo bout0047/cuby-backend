@@ -1,16 +1,6 @@
 version: '3.8'
 services:
-  appointments:
-    container_name: events
-    build: ./events
-    volumes:
-      - ./events/code:/usr/src/app
-    networks:
-      - mscuby
-    ports:
-      - "3010:3010"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
+
   gateway:
     container_name: apigateway
     build: ./apigateway
@@ -22,18 +12,33 @@ services:
       - "3011:3011"
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
-  users:
-    container_name: users
-    build: ./users
+
+  events-db:
+    image: postgres:alpine
+    container_name: events-db
+    env_file:
+      - ./events/code/.env
+    ports:
+      - "5432:5432"
+    networks:
+      - mscuby
+
+  events-ms:
+    container_name: events-ms
+    build: ./events
     volumes:
-      - ./users/code:/usr/src/app
+      - ./events/code:/usr/src/app
     networks:
       - mscuby
     ports:
-      - "3012:3012"
+      - "3010:3010"
     working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
-
+    env_file:
+      - ./events/code/.env
+    environment:
+      DB_HOST: events-db
+    command: bash -c "npm install && npm run dev "
+    
 networks:
   mscuby:
     driver: bridge
