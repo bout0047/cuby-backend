@@ -13,11 +13,16 @@ services:
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
 
-  events-db:
+  postgres:
     image: postgres:alpine
-    container_name: events-db
-    env_file:
-      - ./events/code/.env
+    container_name: postgres
+    volumes:
+      - ./db_setup:/db_setup
+      - ./setup_databases.sh:/docker-entrypoint-initdb.d/setup_databases.sh
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     networks:
