@@ -3,6 +3,7 @@ export const up = async (knex) => {
       table.increments('id').primary();
       table.timestamp('datetime');
       table.string('name');
+      table.string('description');
       table.string('location');
       table.string('link');
     });

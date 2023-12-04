@@ -31,11 +31,11 @@ const getEventById = async (req, res) => {
 };
 
 const createEvent = async (req, res) => {
-  const { datetime, name, location, link } = req.body;
+  const { datetime, name, description, location, link } = req.body;
 
   try {
     const result = await pool.query(
-      'INSERT INTO events (datetime, name, location, link) VALUES ($1, $2, $3, $4) RETURNING *',
+      'INSERT INTO events (datetime, name, description, location, link) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [datetime, name, location, link]
     );
 
@@ -53,7 +53,7 @@ const updateEvent = async (req, res) => {
 
   try {
     const result = await pool.query(
-      'UPDATE events SET datetime = $1, name = $2, location = $3, link = $4 WHERE id = $5 RETURNING *',
+      'UPDATE events SET datetime = $1, name = $2, description = $3, location = $4, link = $5 WHERE id = $6 RETURNING *',
       [datetime, name, location, link, eventId]
     );
 
