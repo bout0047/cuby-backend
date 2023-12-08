@@ -17,7 +17,7 @@ services:
     image: postgres:alpine
     container_name: events-db
     env_file:
-      - ./events/code/.env
+      - ./events/code/.env.${NODE_ENV}
     ports:
       - "5432:5432"
     networks:
@@ -25,6 +25,8 @@ services:
 
   events-ms:
     container_name: events-ms
+    depends_on:
+      - events-db
     build: ./events
     volumes:
       - ./events/code:/usr/src/app
@@ -34,7 +36,7 @@ services:
       - "3010:3010"
     working_dir: /usr/src/app
     env_file:
-      - ./events/code/.env
+      - ./events/code/.env.${NODE_ENV}
     environment:
       DB_HOST: events-db
     command: bash -c "npm install && npm run dev "
@@ -65,7 +67,6 @@ services:
       DB_HOST: profile-db
     command: bash -c "npm install && npm run dev "
     
-
     
 networks:
   mscuby:
