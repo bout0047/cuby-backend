@@ -1,0 +1,33 @@
+name: Events run
+
+on:
+  push:
+    branches:
+      - dev
+      - setup/events-pipeline-58
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Start Services
+        run: docker-compose up -d 
+
+      - name: Install Dependencies & Run
+        run: docker-compose exec -T events-ms npm install
+
+      - name: Check Node Modules
+        run: docker-compose exec -T events-ms ls node_modules
+
+      - name: Run Seeder
+        run: docker-compose exec -T events-ms npm run seed
+
+      - name: Stop Services
+        run: docker-compose down
