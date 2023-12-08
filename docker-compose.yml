@@ -39,7 +39,7 @@ services:
       - ./events/code/.env.${NODE_ENV}
     environment:
       DB_HOST: events-db
-    command: bash -c "npm install && npm run dev && npm run seed"
+    command: bash -c "npm install && npm run dev"
     
 networks:
   mscuby:
