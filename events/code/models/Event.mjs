@@ -3,11 +3,11 @@ class Event {
       this.id = id;
       this.datetime = datetime;
       this.name = name;
-      this.description = this.description;
+      this.description = description;
       this.location = location;
       this.link = link;
     }
   }
   
-  export default Event;
+export default Event;
   
