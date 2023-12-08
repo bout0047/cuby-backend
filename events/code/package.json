@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "dev win": "./node_modules/.bin/nodemon index.js",
-    "seed": "nodemon seeders/eventsSeeder.mjs"
+    "seed": "node seeders/eventsSeeder.mjs"
   },
   "author": "",
   "license": "ISC",
