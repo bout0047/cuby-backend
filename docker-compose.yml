@@ -39,7 +39,34 @@ services:
       - ./events/code/.env.${NODE_ENV}
     environment:
       DB_HOST: events-db
-    command: bash -c "npm install && npm run dev"
+    command: bash -c "npm install && npm run dev "
+
+  profile-db:
+    image: postgres:alpine
+    container_name: profile-db
+    env_file:
+      - ./profile/code/.env
+    ports:
+      - "5433:5433"
+    networks:
+      - mscuby
+
+  profile-ms:
+    container_name: profile-ms
+    build: ./profile
+    volumes:
+      - ./profile/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3012:3012"
+    working_dir: /usr/src/app
+    env_file:
+      - ./profile/code/.env
+    environment:
+      DB_HOST: profile-db
+    command: bash -c "npm install && npm run dev "
+    
     
 networks:
   mscuby:
