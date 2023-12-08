@@ -21,7 +21,7 @@ jobs:
         run: docker-compose up -d events-db events-ms
 
       - name: Check Node Modules
-        run: docker-compose exec events-ms ls node_modules
+        run: docker-compose exec -T events-ms ls node_modules
 
       - name: Run Seeder
         run: docker-compose exec -T events-ms npm run seed
