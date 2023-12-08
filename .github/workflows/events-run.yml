@@ -10,12 +10,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Start Services
-        run: NODE_ENV=test docker-compose up -d events-db events-ms
+        run: docker-compose up -d events-db events-ms
 
       - name: Run Seeder
         run: docker-compose exec events-ms npm run seed
