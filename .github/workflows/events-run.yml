@@ -21,7 +21,7 @@ jobs:
         run: docker-compose up -d events-db events-ms
 
       - name: Run Seeder
-        run: docker-compose exec events-ms npm run seed
+        run: docker-compose exec -T events-ms npm run seed
 
       - name: Stop Services
         run: docker-compose down
