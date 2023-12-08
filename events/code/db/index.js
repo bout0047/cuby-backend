@@ -25,7 +25,7 @@ switch (environment) {
     configFileName = '.env.test';
     break;
   default:
-    configFileName = '.env';
+    configFileName = '.env.development';
 }
 
 dotenv.config({ path: configFileName });
