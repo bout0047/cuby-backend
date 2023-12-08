@@ -2,25 +2,46 @@ import { pool } from '../db/index.js';
 
 const seedData = [
   {
-    datetime: '2023-12-01T10:00:00Z',
-    name: 'Sample Event 1',
-    description: 'Description of Event 1',
-    location: 'Sample Location 1',
-    link: 'https://example.com/event1',
+    "datetime": "2023-12-01T10:00:00Z",
+    "name": "Tech Conference 2023",
+    "description": "Join us for a cutting-edge technology conference featuring keynote speakers and interactive workshops.",
+    "location": "Convention Center, CityName",
+    "link": "https://techconference2023.com"
   },
   {
-    datetime: '2023-12-02T14:30:00Z',
-    name: 'Sample Event 2',
-    description: 'Description of Event 2',
-    location: 'Sample Location 2',
-    link: 'https://example.com/event2',
+    "datetime": "2023-12-02T14:30:00Z",
+    "name": "Art Exhibition: Modern Perspectives",
+    "description": "Explore the works of contemporary artists pushing the boundaries of artistic expression.",
+    "location": "Art Gallery, Downtown Arts District",
+    "link": "https://artexhibition2023.com"
   },
   {
-    datetime: '2023-12-03T18:45:00Z',
-    name: 'Sample Event 3',
-    description: 'Description of Event 3',
-    location: 'Sample Location 3',
-    link: 'https://example.com/event3',
+    "datetime": "2023-12-03T18:45:00Z",
+    "name": "Global Health Symposium",
+    "description": "A comprehensive discussion on global health challenges and innovative solutions with renowned experts.",
+    "location": "Conference Hall, Medical University",
+    "link": "https://globalhealthsymposium.org"
+  },
+  {
+    "datetime": "2023-12-05T11:00:00Z",
+    "name": "Startup Pitch Day",
+    "description": "Witness exciting pitches from promising startups and connect with the next generation of entrepreneurs.",
+    "location": "Innovation Hub, Tech Park",
+    "link": "https://startuppitchday.com"
+  },
+  {
+    "datetime": "2023-12-07T16:15:00Z",
+    "name": "Culinary Delights Festival",
+    "description": "Savor the flavors of local and international cuisines, with live cooking demonstrations and food tastings.",
+    "location": "Food Festival Grounds, Waterfront",
+    "link": "https://culinarydelightsfestival.com"
+  },
+  {
+    "datetime": "2023-12-10T20:00:00Z",
+    "name": "Jazz in the Park",
+    "description": "Relax and enjoy an evening of jazz music in the beautiful surroundings of the city park.",
+    "location": "City Park Amphitheater",
+    "link": "https://jazzinthepark.com"
   },
 ];
 
