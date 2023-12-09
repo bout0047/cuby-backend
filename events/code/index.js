@@ -1,14 +1,10 @@
 import express from 'express';
-import { pool } from './db/index.js';
-import eventsRouter from './routes/events.mjs';
-import puppeteer from 'puppeteer'
+import puppeteer from 'puppeteer';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
-app.use('/', eventsRouter);
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
@@ -30,18 +26,23 @@ const getPage = async () => {
   const eventsScraped = await page.evaluate(() => {
     const eventDivs = document.querySelectorAll(".event-item");
 
-    const events = [];
-
-    eventDivs.forEach((eventDiv) => {
+    return Array.from(eventDivs).map((eventDiv) => {
       const eventMetaScraped = eventDiv.querySelector(".meta");
       const eventMetaIScraped = eventMetaScraped.querySelector(".meta-right");
       const eventMetaIIScraped = eventMetaIScraped.querySelector(".title");
-      const eventTitleScraped = eventMetaIIScraped.innerText;
+      const eventDateDisplayScraped = eventMetaIScraped.querySelector(".up-time-display");
+      const eventPlaceScraped = eventMetaIScraped.querySelector(".up-venue").innerText.trim();
+      const eventDateScrapedRaw = eventDateDisplayScraped ? eventDateDisplayScraped.innerText : '';
 
-      events.push({ eventTitleScraped });
+      // Extract date without surrounding letters and whitespace
+      const eventDateScraped = eventDateScrapedRaw.replace(/\s+/g, ' ').trim();
+
+      return {
+        eventTitleScraped: eventMetaIIScraped.innerText,
+        eventDateScraped,
+        eventPlaceScraped,
+      };
     });
-
-    return events;
   });
 
   console.log(eventsScraped);
@@ -50,5 +51,3 @@ const getPage = async () => {
 };
 
 getPage();
-
-

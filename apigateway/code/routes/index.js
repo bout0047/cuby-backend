@@ -14,6 +14,6 @@ router.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-router.use('/', cors(), eventProxy);
+router.use('/events', cors(), eventProxy);
 
 export default router;
