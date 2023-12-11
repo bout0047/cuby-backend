@@ -4,6 +4,11 @@ import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 const router = express.Router();
 
+const authProxy = createProxyMiddleware({
+  target: 'http://auth-ms:3013',
+  changeOrigin: true,
+  onProxyReq: fixRequestBody,
+})
 const eventProxy = createProxyMiddleware({
   target: 'http://events-ms:3010',
   changeOrigin: true,
@@ -14,6 +19,9 @@ router.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-router.use('/', cors(), eventProxy);
+router.use('/users', cors(), authProxy);
+router.use('/login', cors(), authProxy);
+router.use('/register', cors(), authProxy);
+router.use('/events', cors(), eventProxy);
 
 export default router;
