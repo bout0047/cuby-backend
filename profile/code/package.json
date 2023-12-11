@@ -1,21 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "ex2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "dev": "./node_modules/nodemon/bin/nodemon.js start.js",
-    "dev win": "./node_modules/.bin/nodemon start.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.2",
-    "express": "^4.17.1"
-=======
   "name": "profile-ms",
   "version": "1.0.0",
   "description": "Profile Management System",
@@ -36,7 +19,6 @@
     "knex": "^3.0.1",
     "pg": "^8.11.3",
     "sinon": "^17.0.1"
->>>>>>> 0c9f427a53b50b7e2057fdf0d319af389c317715
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
