@@ -13,6 +13,39 @@ services:
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
 
+  users-db:
+    image: postgres:alpine
+    container_name: users-db
+    volumes:
+      - ./auth/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./auth/code/.env.${NODE_ENV}
+    ports:
+      - "5434:5434"
+    command:
+      - -p 5434
+    networks:
+      - mscuby
+    
+  auth-ms:
+    container_name: auth-ms
+    depends_on:
+      - users-db
+    build: ./auth
+    volumes:
+      - ./auth/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3013:3013"
+    working_dir: /usr/src/app
+    env_file:
+      - ./auth/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: users-db
+    command: bash -c "npm install && npm run dev "
+
+
   events-db:
     image: postgres:alpine
     container_name: events-db
