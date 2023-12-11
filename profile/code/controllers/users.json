@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Dawid Alexander Czuba",
+      "email": "password1"
+    },
+    {
+      "id": 2,
+      "name": "Messi",
+      "email": "password2"
+    }
+  ]
+}
