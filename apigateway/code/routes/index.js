@@ -15,6 +15,13 @@ const eventProxy = createProxyMiddleware({
   onProxyReq: fixRequestBody,
 });
 
+const profileProxy = createProxyMiddleware({
+  target: 'http://profile-ms:3012',
+  changeOrigin: true,
+  onProxyReq: fixRequestBody,
+});
+
+
 router.get('/', (req, res) => {
   res.send('Hello World!')
 })
@@ -23,5 +30,6 @@ router.use('/users', cors(), authProxy);
 router.use('/login', cors(), authProxy);
 router.use('/register', cors(), authProxy);
 router.use('/events', cors(), eventProxy);
+router.use('/profiles', cors(), profileProxy);
 
 export default router;
