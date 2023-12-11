@@ -5,7 +5,7 @@ import {
   createProfile,
   updateProfile,
   deleteProfile,
-} from '../controllers/profileController.mjs'; // Adjusted controller imports
+} from '../controllers/profileController.mjs'; 
 
 const router = express.Router();
 
