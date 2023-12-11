@@ -26,13 +26,16 @@ const createUser = async (req, res) => {
     const { username, password } = req.body;
 
     // Hash the password before storing it
-    const hashedPassword = password //await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Store the user in the database
     const result = await pool.query('INSERT INTO users(username, password) VALUES($1, $2) RETURNING *', [username, hashedPassword]);
 
     const newUser = new User(result.rows[0]);
-    res.status(201).json(newUser);
+    
+    const token = jwt.sign({ userId: newUser.id }, SECRET_KEY, { expiresIn: '1h' });
+
+    res.json({ token });
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -54,7 +57,7 @@ const authenticateUser = async (req, res) => {
     const user = new User(result.rows[0]);
 
     // Compare the provided password with the hashed password in the database
-    const passwordMatch = password //await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed. Incorrect password.' });
