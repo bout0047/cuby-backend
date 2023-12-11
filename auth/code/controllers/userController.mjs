@@ -25,6 +25,13 @@ const createUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    const existingUser = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+
+    if (existingUser.rows.length > 0) {
+      // Username is already occupied
+      return res.status(400).json({ error: 'Username is already taken' });
+    }
+
     // Hash the password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
 
