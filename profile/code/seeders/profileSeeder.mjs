@@ -2,39 +2,39 @@ import { pool } from '../db/index.js';
 
 const seedData = [
   {
-    id: 1,
-    name: "Pete Davidson",
-    email: "Pete@bitches.com",
-    goals: ["pull up", "be charismatic", "get every baddie in the world"],
-    stats: {
-      clicks: 5,
-      stress: 37,
-      exercises: 3,
-    },
-    interests: [
-      { id: 1, name: "Football", selected: false },
-      { id: 2, name: "Basketball", selected: true },
-      { id: 3, name: "Draw", selected: true },
-      { id: 4, name: "Paint", selected: true },
-      { id: 5, name: "Game", selected: false },
+    "id": "1",
+    "name": "Pete Davidson",
+    "email": "Pete@bitches.com",
+    "goals": ["pull up", "be charismatic", "get every baddie in the world"],
+    "stats": [
+      "clicks", "5",
+      "stress", "37",
+      "exercises","3",
+    ],
+    "interests": [
+      { "id": "1", "name": "Football", "selected": "false" },
+      { "id": "2", "name": "Basketball", "selected": "true" },
+      { "id": "3", "name": "Draw", "selected": "true" },
+      { "id": "4", "name": "Paint", "selected": "true" },
+      { "id": "5", "name": "Game", "selected": "false" },
     ],
   },
   {
-    id: 2,
-    name: "Messi",
-    email: "Messi@dabest.com",
-    goals: ["score goals", "win awards", "train hard"],
-    stats: {
-      clicks: 5,
-      stress: 37,
-      exercises: 3,
-    },
-    interests: [
-      { id: 1, name: "Football", selected: true },
-      { id: 2, name: "Basketball", selected: true },
-      { id: 3, name: "Draw", selected: false },
-      { id: 4, name: "Paint", selected: true },
-      { id: 5, name: "Game", selected: false },
+    "id": "2",
+    "name": "Messi",
+    "email": "Messi@dabest.com",
+    "goals": ["score goals", "win awards", "train hard"],
+    "stats": [
+      "clicks", "5",
+      "stress", "37",
+      "exercises","3",
+    ],
+    "interests": [
+      { "id": "1", "name": "Football", "selected": "true" },
+      { "id": "2", "name": "Basketball", "selected": "false" },
+      { "id": "3", "name": "Draw", "selected": "false" },
+      { "id": "4", "name": "Paint", "selected": "false" },
+      { "id": "5", "name": "Game", "selected": "true" },
     ],
   },
 ];
@@ -44,11 +44,11 @@ const seedDatabase = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS profile (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(255),
-        email VARCHAR(255),
-        goals VARCHAR(255)[],
-        stats JSONB,
-        interests JSONB
+        name VARCHAR(255) UNIQUE not null,
+        email VARCHAR(255) UNIQUE not null,
+        goals text[],
+        stats text [],
+        interests text []
       );
     `);
 

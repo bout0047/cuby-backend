@@ -3,9 +3,9 @@ export const up = async (knex) => {
     table.increments('id').primary();
     table.string('name');
     table.string('email');
-    table.jsonb('goals'); // Assuming goals should be stored as JSONB
-    table.jsonb('stats'); // Assuming stats should be stored as JSONB
-    table.jsonb('interests'); // Assuming interests should be stored as JSONB
+    table.specificType('goals', 'text[]'); //maybe use string[] instead of text[]
+    table.specificType('stats', 'text[]');
+    table.specificType('interests', 'text[]');
   });
 };
 
