@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "ex2",
   "version": "1.0.0",
   "description": "",
@@ -14,6 +15,28 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.17.1"
+=======
+  "name": "profile-ms",
+  "version": "1.0.0",
+  "description": "Profile Management System",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "dev:win": "./node_modules/.bin/nodemon index.js",
+    "seed": "node seeders/profileSeeder.mjs"
+  },
+  "author": "Drico",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.2",
+    "express": "^4.17.1",
+    "knex": "^3.0.1",
+    "pg": "^8.11.3",
+    "sinon": "^17.0.1"
+>>>>>>> 0c9f427a53b50b7e2057fdf0d319af389c317715
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
