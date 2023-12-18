@@ -1,9 +1,0 @@
-To create migration use:
-npx knex migrate:make "migration_name"
-
-To run the migrations use:
-npx knex migrate:latest
-
-To seed db use:
-node "seeder_path"
-
