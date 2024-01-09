@@ -3,6 +3,7 @@ import Event from '../models/Event.mjs';
 
 const getAllEvents = async (req, res) => {
   try {
+    // Assuming the pool is initialized globally and available in ../db/index.js
     const result = await pool.query('SELECT * FROM events');
     const events = result.rows.map((dbEvent) => new Event(dbEvent));
     res.json(events);
@@ -11,6 +12,7 @@ const getAllEvents = async (req, res) => {
     res.status(500).json({ error: 'Internal server fetch error' });
   }
 };
+
 
 const getEventById = async (req, res) => {
   const eventId = req.params.id;
@@ -31,18 +33,28 @@ const getEventById = async (req, res) => {
 };
 
 const createEvent = async (req, res) => {
-  const { datetime, name, description, location, link } = req.body;
-
   try {
-    const result = await pool.query(
-      'INSERT INTO events (datetime, name, description, location, link) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [datetime, name, location, link]
-    );
+    // Scrape events
+    const scrapedEvents = await scrapeEvents();
 
-    const newEvent = new Event(result.rows[0]);
-    res.status(201).json(newEvent);
+    // Insert scraped events into the database
+    for (const event of scrapedEvents) {
+      const query = {
+        text: 'INSERT INTO events (name, datetime, location) VALUES ($1, $2, $3)',
+        values: [event.eventTitleScraped, event.eventDateScraped, event.eventPlaceScraped],
+      };
+
+      try {
+        await pool.query(query);
+        console.log(`Inserted row with id`);
+      } catch (err) {
+        console.error('Error inserting event into the database:', err);
+      }
+    }
+
+    res.status(201).json({ message: 'Scraped events inserted successfully' });
   } catch (error) {
-    console.error('Error creating event:', error);
+    console.error('Error scraping and inserting events:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
