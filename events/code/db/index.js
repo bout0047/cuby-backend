@@ -63,27 +63,41 @@ const seedDatabase = async () => {
 
     // Insert scraped events into the database
     for (const event of scrapedEvents) {
-      const insertQuery = {
-        text: 'INSERT INTO events (name, datetime, location) VALUES ($1, $2, $3) RETURNING *',
-        values: [event.eventTitleScraped, event.eventDateScraped, event.eventPlaceScraped],
+      // Check if the event already exists in the database based on name and datetime
+      const checkExistenceQuery = {
+        text: 'SELECT * FROM events WHERE name = $1 AND datetime = $2',
+        values: [event.eventTitleScraped, event.eventDateScraped],
       };
 
-      try {
-        const result = await pool.query(insertQuery);
-        const insertedEvent = result.rows[0];
-        console.log(`Inserted event with ID ${insertedEvent.id}`);
-      } catch (err) {
-        console.error('Error inserting event into the database:', err);
+      const existingEventResult = await pool.query(checkExistenceQuery);
+
+      if (existingEventResult.rows.length === 0) {
+        // Event does not exist, insert it into the database
+        const insertQuery = {
+          text: 'INSERT INTO events (name, datetime, location) VALUES ($1, $2, $3) RETURNING *',
+          values: [event.eventTitleScraped, event.eventDateScraped, event.eventPlaceScraped],
+        };
+
+        try {
+          const result = await pool.query(insertQuery);
+          const insertedEvent = result.rows[0];
+          console.log(`Inserted event with ID ${insertedEvent.id}`);
+        } catch (err) {
+          console.error('Error inserting event into the database:', err);
+        }
+      } else {
+        // Event already exists, skip insertion
+        console.log(`Event already exists in the database: ${event.eventTitleScraped}`);
       }
     }
 
     console.log('Database seeded successfully with scraped events');
   } catch (error) {
     console.error('Error seeding database:', error);
-  } 
+  }
 };
 
 // Call the seedDatabase function to create and seed the database
 seedDatabase();
 
-export { pool }
+export { pool };
