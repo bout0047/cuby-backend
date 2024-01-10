@@ -5,11 +5,7 @@ const seedData = [
     "id": "0",
     "name": "Pete Davidson",
     "email": "Pete@bitches.com",
-    "goals": [
-      ["eye contact", "small talk", "body language"],
-      ["stranger conversation", "random event", "presentation"],
-      ["meditation", "breathing excersise", "friend support"],
-    ],
+    "goals": [],
     "stats": [
       "clicks", "5",
       "stress", "37",
@@ -34,11 +30,7 @@ const seedData = [
     "id": "1",
     "name": "Rondaldo",
     "email": "Messi@dabest.com",
-    "goals": [
-      ["eye contact", "small talk", "body language"],
-      ["stranger conversation", "random event", "presentation"],
-      ["meditation", "breathing excersise", "friend support"],
-    ],
+    "goals": [],
     "stats": [
       "clicks", "5",
       "stress", "37",
