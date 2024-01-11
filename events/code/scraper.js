@@ -2,6 +2,11 @@ import express from "express";
 import cheerio from "cheerio";
 import axios from "axios";
 import isOnline from "is-online";
+import striptags from "striptags";
+
+const cleanHTML = (html) => {
+  return striptags(html);
+};
 
 const scrapeEvents = async () => {
   return new Promise(async (resolve, reject) => {
@@ -15,38 +20,45 @@ const scrapeEvents = async () => {
       const url = "https://allevents.in/events?ref=cpt";
       const response = await axios.get(url);
       const $ = cheerio.load(response.data);
-      const eventsScraped = [];
-
-      $('.event-item').each((index, element) => {
+      const eventPromises = $('.event-item').map(async (index, element) => {
         const eventMetaScraped = $(element).find('.meta');
         const eventMetaIScraped = eventMetaScraped.find('.meta-right');
         const eventMetaIIScraped = eventMetaIScraped.find('.title');
         const eventDateDisplayScraped = eventMetaIScraped.find('.up-time-display');
         const eventPlaceScraped = eventMetaIScraped.find('.up-venue').text().trim();
         const eventDateScrapedRaw = eventDateDisplayScraped ? eventDateDisplayScraped.text() : '';
-
         const eventDateScraped = eventDateScrapedRaw.replace(/\s+/g, ' ').trim();
 
         const eventTitleScraped = eventMetaIIScraped.text().replace(/\s+/g, ' ').trim();
 
+        // Scrape event description and image
+        const eventLink = $(element).data('link');
+        const eventResponse = await axios.get(eventLink);
+        const $event = cheerio.load(eventResponse.data);
+        const eventDescription = cleanHTML($event('.event-description').find('.event-description-html').html());
+        const eventImage = $event('.event-banner-image').attr('src');
+
         const eventData = {
-          eventTitleScraped,
-          eventDateScraped,
-          eventPlaceScraped,
+          eventTitleScraped: eventTitleScraped.trim(),
+          eventDateScraped: eventDateScraped.trim(),
+          eventPlaceScraped: eventPlaceScraped.trim(),
+          eventDescription: eventDescription.trim(),
+          eventImage: eventImage ? eventImage.trim() : undefined,
         };
 
-        eventsScraped.push(eventData);
-      });
-      resolve(eventsScraped);
+        return eventData;
+      }).get();
+
+      const events = await Promise.all(eventPromises);
+      resolve(events);
 
     } catch (error) {
       reject(error);
     }
   });
-}
+};
 
 const startScrapingWithInterval = () => {
-  // Function to call scrapeEvents every 3 hours
   const scrapeEvery3Hours = async () => {
     try {
       const online = await isOnline();
@@ -63,15 +75,12 @@ const startScrapingWithInterval = () => {
     }
   }
 
-  // Initial call
   scrapeEvery3Hours();
 
-  // Set up interval to call the function every 3 hours (in milliseconds)
   const interval = 3 * 60 * 60 * 1000; // 3 hours
   setInterval(scrapeEvery3Hours, interval);
 }
 
-// Start scraping with interval
 startScrapingWithInterval();
 
 export default scrapeEvents;

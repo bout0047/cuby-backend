@@ -40,8 +40,8 @@ const createEvent = async (req, res) => {
     // Insert scraped events into the database
     for (const event of scrapedEvents) {
       const query = {
-        text: 'INSERT INTO events (name, datetime, location) VALUES ($1, $2, $3)',
-        values: [event.eventTitleScraped, event.eventDateScraped, event.eventPlaceScraped],
+        text: 'INSERT INTO events (name, datetime, location, description) VALUES ($1, $2, $3, $4)',
+        values: [event.eventTitleScraped, event.eventDateScraped, event.eventPlaceScraped, event.eventDescription],
       };
 
       try {
