@@ -37,7 +37,6 @@ const scrapeEvents = async () => {
         const $event = cheerio.load(eventResponse.data);
         const eventDescription = cleanHTML($event('.event-description').find('.event-description-html').html());
         const eventImage = $event('.event-banner-image').attr('src');
-
         const eventData = {
           eventTitleScraped: eventTitleScraped.trim(),
           eventDateScraped: eventDateScraped.trim(),

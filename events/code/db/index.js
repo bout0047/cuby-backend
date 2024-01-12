@@ -41,7 +41,8 @@ const createEventsTable = async () => {
       name VARCHAR(255) NOT NULL,
       datetime TIMESTAMP NOT NULL,
       location VARCHAR(255) NOT NULL,
-      description TEXT
+      description TEXT,
+      link VARCHAR(255)
     );
   `;
 
@@ -75,12 +76,13 @@ const seedDatabase = async () => {
       if (existingEventResult.rows.length === 0) {
         // Event does not exist, insert it into the database
         const insertQuery = {
-          text: 'INSERT INTO events (name, datetime, location, description) VALUES ($1, $2, $3, $4) RETURNING *',
+          text: 'INSERT INTO events (name, datetime, location, description, link) VALUES ($1, $2, $3, $4, $5) RETURNING *',
           values: [
             event.eventTitleScraped,
             event.eventDateScraped,
             event.eventPlaceScraped,
-            event.eventDescription, // Assuming "eventDescription" is available in your scraped data
+            event.eventDescription, 
+            event.eventImage,
           ],
         };
 
