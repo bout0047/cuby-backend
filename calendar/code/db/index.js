@@ -1,7 +1,5 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import scrapeEvents from '../scraper.js';
-
 const { Pool } = pg;
 
 const createPool = () => {
@@ -41,7 +39,6 @@ const createEventsTable = async () => {
       name VARCHAR(255) NOT NULL,
       datetime TIMESTAMP NOT NULL,
       location VARCHAR(255) NOT NULL,
-      image VARCHAR(255),
       description TEXT,
       link VARCHAR(255)
     );

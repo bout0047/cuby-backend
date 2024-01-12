@@ -14,6 +14,11 @@ const eventProxy = createProxyMiddleware({
   changeOrigin: true,
   onProxyReq: fixRequestBody,
 });
+const calendarProxy = createProxyMiddleware({
+  target: 'http://calendar-ms:3015',
+  changeOrigin: true,
+  onProxyReq: fixRequestBody,
+})
 
 const profileProxy = createProxyMiddleware({
   target: 'http://profile-ms:3012',
@@ -30,6 +35,7 @@ router.use('/users', cors(), authProxy);
 router.use('/login', cors(), authProxy);
 router.use('/register', cors(), authProxy);
 router.use('/events', cors(), eventProxy);
+router.use('/calendar', cors(), calendarProxy);
 router.use('/profiles', cors(), profileProxy);
 
 export default router;
