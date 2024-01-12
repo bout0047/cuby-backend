@@ -1,5 +1,6 @@
 import express from 'express';
 import session from 'express-session';
+import cors from 'cors';
 import { pool } from './db/index.js';
 import userRouter from './routes/router.mjs';
 import dotenv from 'dotenv';
@@ -15,6 +16,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+app.use(cors());
 
 app.use('/', userRouter);
 
