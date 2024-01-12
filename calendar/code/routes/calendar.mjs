@@ -4,13 +4,13 @@ import {
   createCalendarEntry,
   updateEntry,
   deleteEntry
-} from '../controllers/eventsController.mjs';
+} from '../controllers/calendarController.mjs';
 
 const router = express.Router();
 
 router.get('/calendar/', getCalendarEntries);
-router.post('/calendar/:id', createCalendarEntry);
-router.put('/calendar/:id', updateEntry);
-router.delete('/calendar/:id', deleteEntry);
+router.post('/calendar/', createCalendarEntry);
+router.put('/calendar/', updateEntry);
+router.delete('/calendar/', deleteEntry);
 
 export default router;

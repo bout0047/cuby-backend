@@ -7,8 +7,6 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use('/', calendarRouter);
-
 const initDB = async () => {
   try {
     // Use the pool to check the connection
@@ -23,8 +21,8 @@ const initDB = async () => {
 // Initialize the database and start the server
 initDB()
   .then(() => {
-    // Use the eventsRouter after the database connection is established
-    app.use('/', eventsRouter);
+    // Use the calendarRouter after the database connection is established
+    app.use('/', calendarRouter);
 
     app.listen(port, () => {
       console.log(`Server is running at http://localhost:${port}`);

@@ -77,6 +77,8 @@ services:
   calendar-db:
     image: postgres:alpine
     container_name: calendar-db
+    volumes:
+      - ./calendar/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
     ports:
@@ -96,7 +98,7 @@ services:
     networks:
       - mscuby
     ports:
-      - "3012:3012"
+      - "3015:3015"
     working_dir: /usr/src/app
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
