@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import session from 'express-session';
+import dotenv from 'dotenv';
+
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 const router = express.Router();
@@ -26,7 +29,14 @@ router.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+router.use(session({
+  secret: "asdfghjkl123456789", // Same secret key as in index.js
+  resave: false,
+  saveUninitialized: true,
+}));
+
 router.use('/users', cors(), authProxy);
+router.use('/auth', cors(), authProxy);
 router.use('/login', cors(), authProxy);
 router.use('/register', cors(), authProxy);
 router.use('/events', cors(), eventProxy);

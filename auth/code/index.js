@@ -1,11 +1,20 @@
 import express from 'express';
+import session from 'express-session';
 import { pool } from './db/index.js';
 import userRouter from './routes/router.mjs';
+import dotenv from 'dotenv';
+
+//dotenv.config({ path: '../.env.development' });
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(session({ 
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true
+}));
 
 app.use('/', userRouter);
 
