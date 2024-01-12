@@ -45,6 +45,8 @@ router.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+router.use(cors());
+
 router.use(session({
   secret: "asdfghjkl123456789", // Same secret key as in index.js
   resave: false,

@@ -3,6 +3,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 import { pool } from '../db/index.js';
 
@@ -11,11 +12,8 @@ import {
   authenticateUser
 } from '../controllers/authController.mjs';
 
-//dotenv.config({ path: '../.env.development' });
-
 const router = express.Router();
-
-// POST create a new user
+router.use(cors());
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -62,6 +60,7 @@ router.get('/auth/google/callback',
   (req, res) => {
     // Successful authentication, redirect to the home page or generate a JWT token
     console.log('Happy Google End')
+    res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Add this line
     res.redirect('/');
   }
 );
