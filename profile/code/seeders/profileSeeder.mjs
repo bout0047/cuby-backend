@@ -2,7 +2,6 @@ import { pool } from '../db/index.js';
 
 const seedData = [
   {
-    "id": "0",
     "name": "Pete Davidson",
     "email": "Pete@bitches.com",
     "goals": [],
@@ -27,7 +26,6 @@ const seedData = [
     ],
   },
   {
-    "id": "1",
     "name": "Rondaldo",
     "email": "Messi@dabest.com",
     "goals": [],
