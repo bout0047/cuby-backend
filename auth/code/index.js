@@ -2,7 +2,7 @@ import express from 'express';
 import session from 'express-session';
 import cors from 'cors';
 import { pool } from './db/index.js';
-import userRouter from './routes/router.mjs';
+import authRouter from './routes/router.mjs';
 import dotenv from 'dotenv';
 
 //dotenv.config({ path: '../.env.development' });
@@ -18,8 +18,6 @@ app.use(session({
 }));
 app.use(cors());
 
-app.use('/', userRouter);
-
 const initDB = async () => {
   try {
     // Use the pool to check the connection
@@ -34,8 +32,8 @@ const initDB = async () => {
 // Initialize the database and start the server
 initDB()
   .then(() => {
-    // Use the eventsRouter after the database connection is established
-    app.use('/', userRouter);
+    // Use the Router after the database connection is established
+    app.use('/', authRouter);
 
     app.listen(port, () => {
       console.log(`Server is running at http://localhost:${port}`);

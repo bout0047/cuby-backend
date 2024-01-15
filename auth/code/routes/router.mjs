@@ -1,11 +1,6 @@
 import express from 'express';
-import session from 'express-session';
-import passport from 'passport';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import axios from 'axios';
 import dotenv from 'dotenv';
-import cors from 'cors';
-
-import { pool } from '../db/index.js';
 
 import {
   createUser,
@@ -13,68 +8,64 @@ import {
 } from '../controllers/authController.mjs';
 
 const router = express.Router();
-router.use(cors());
 
-passport.serializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.deserializeUser((user, done) => {
-  done(null, user);
-});
-
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
+// Google OAuth Configuration
+const googleConfig = {
+  clientId: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: 'http://localhost:3013/auth/google/callback',
-},
-async (accessToken, refreshToken, profile, done) => {
+  redirectUri: process.env.GOOGLE_REDIRECT_URI,
+};
+
+router.get('/auth/google', async (req, res) => {
+  console.log('check1')
+  const { clientId, redirectUri } = googleConfig;
+  const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid profile email&prompt=consent`;
+  res.json({ redirectUrl: authUrl });
+});
+
+router.get('/auth/callback', async (req, res) => {
+  console.log('hello')
+  const { code } = req.query;
+  console.log(code);
+
   try {
-    console.log('Happy Google Start', profile.id);
-    // Check if the user exists in your database based on profile.id or other unique identifier
-    let user = await pool.query('SELECT * FROM users WHERE googleId = $1', [profile.id]);
+    const tokenResponse = await axios.post(
+      'https://oauth2.googleapis.com/token',
+      {
+        code,
+        client_id: googleConfig.clientId,
+        client_secret: googleConfig.clientSecret,
+        redirect_uri: googleConfig.redirectUri,
+        grant_type: 'authorization_code',
+      }
+    );
 
-    if (user.rows.length === 0) {
-      // User not found, create a new user entry
-      // Insert the user into the database using profile information
-      const newUserResult = await pool.query('INSERT INTO users(googleId, username) VALUES($1, $2) RETURNING *', [profile.id, profile.displayName]);
-      user = newUserResult.rows[0];
-    }
+    const googleAccessToken = tokenResponse.data.access_token;
 
-    // Call done(null, user) with the user object
-    done(null, user);
+    // Use the access token to get user info from Google
+    const googleUserInfo = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${googleAccessToken}`,
+      },
+    });
+    
+    console.log(googleUserInfo);
+
+    const authToken = generateToken(existingUser || { googleId: googleUserInfo.data.id });
+    console.log(authToken);
+    // Return the token in the response
+    res.json({ token: authToken, redirectUrl: '/home' });
+
   } catch (error) {
-    console.error('Error during Google authentication:', error);
-    done(error, null);
+    console.error('Error exchanging code for token:', error.message);
+    res.redirect('http://localhost:5173/home')
   }
-}));
-
-// Google login route
-router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
-// Google callback route
-router.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  (req, res) => {
-    // Successful authentication, redirect to the home page or generate a JWT token
-    console.log('Happy Google End')
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173'); // Add this line
-    res.redirect('/');
-  }
-);
+});
 
 // POST register user and generate token
-router.post('/register/', createUser);
+router.post('/auth/register/', createUser);
 
 // POST authenticate user and generate token
-router.post('/login/', authenticateUser);
-
-router.use(session({
-  secret: process.env.SECRET_KEY, // Same secret key as in index.js
-  resave: false,
-  saveUninitialized: true,
-}));
+router.post('/auth/login/', authenticateUser);
 
 export default router;

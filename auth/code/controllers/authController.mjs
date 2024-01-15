@@ -56,9 +56,7 @@ const createUser = async (req, res) => {
 
     const newUser = new User(result.rows[0]);
     
-    const token = jwt.sign({ userId: newUser.id }, SECRET_KEY, { expiresIn: '1h' });
-
-    res.json({ token });
+    res.status(200).json;
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -86,10 +84,7 @@ const authenticateUser = async (req, res) => {
       return res.status(401).json({ error: 'Authentication failed. Incorrect password.' });
     }
 
-    // Generate a JWT token
-    const token = jwt.sign({ userId: user.id }, SECRET_KEY, { expiresIn: '1h' });
-
-    res.json({ token });
+    res.status(200).json;
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.status(500).json({ error: 'Internal server error' });
