@@ -1,9 +1,9 @@
 // start.js setup from learnnode.com by Wes Bos
 import express from 'express';
 import * as dotenv from 'dotenv';
+import indexRouter from './routes/profile';
+
 dotenv.config({ path: 'variables.env' });
-import indexRouter from './routes/index.js';
-import { ErrorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -14,13 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/', indexRouter);
 app.use((req, res, next) => {
   try {
-    //set header before response
+    // set header before response
     res.status(404).send("Sorry can't find that!");
   } catch (err) {
     next(err);
   }
 });
-app.use(ErrorHandler);
 
 app.set('port', process.env.PORT || 3012);
 const server = app.listen(app.get('port'), () => {

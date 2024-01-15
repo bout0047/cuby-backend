@@ -72,6 +72,38 @@ services:
       - ./events/code/.env.${NODE_ENV}
     environment:
       DB_HOST: events-db
+    command: bash -c "npm install && npm run dev"
+
+  calendar-db:
+    image: postgres:alpine
+    container_name: calendar-db
+    volumes:
+      - ./calendar/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./calendar/code/.env.${NODE_ENV}
+    ports:
+      - "5435:5435"
+    command: 
+      - -p 5435 
+    networks:
+      - mscuby
+
+  calendar-ms:
+    container_name: calendar-ms
+    depends_on:
+      - calendar-db
+    build: ./calendar
+    volumes:
+      - ./calendar/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3015:3015"
+    working_dir: /usr/src/app
+    env_file:
+      - ./calendar/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: calendar-db
     command: bash -c "npm install && npm run dev "
 
   profile-db:

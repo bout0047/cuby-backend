@@ -1,13 +1,11 @@
 import express from 'express';
 import pool from './db/index';
-import eventsRouter from './routes/events';
+import calendarRouter from './routes/calendar';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
-app.use('/', eventsRouter);
 
 const initDB = async () => {
   try {
@@ -23,8 +21,8 @@ const initDB = async () => {
 // Initialize the database and start the server
 initDB()
   .then(() => {
-    // Use the eventsRouter after the database connection is established
-    app.use('/', eventsRouter);
+    // Use the calendarRouter after the database connection is established
+    app.use('/', calendarRouter);
 
     app.listen(port, () => {
       console.log(`Server is running at http://localhost:${port}`);

@@ -1,18 +1,16 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import scrapeEvents from '../scraper.js';
+import scrapeEvents from '../scraper';
 
 const { Pool } = pg;
 
-const createPool = () => {
-  return new Pool({
-    user: process.env.POSTGRES_USER,
-    host: process.env.DB_HOST,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: process.env.DB_PORT || 5432,
-  });
-};
+const createPool = () => new Pool({
+  user: process.env.POSTGRES_USER,
+  host: process.env.DB_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+});
 
 let configFileName;
 
@@ -41,6 +39,7 @@ const createEventsTable = async () => {
       name VARCHAR(255) NOT NULL,
       datetime TIMESTAMP NOT NULL,
       location VARCHAR(255) NOT NULL,
+      image VARCHAR(255),
       description TEXT,
       link VARCHAR(255)
     );
@@ -81,7 +80,7 @@ const seedDatabase = async () => {
             event.eventTitleScraped,
             event.eventDateScraped,
             event.eventPlaceScraped,
-            event.eventDescription, 
+            event.eventDescription,
             event.eventImage,
           ],
         };
@@ -108,4 +107,4 @@ const seedDatabase = async () => {
 // Call the seedDatabase function to create and seed the database
 seedDatabase();
 
-export { pool };
+export default pool;
