@@ -1,16 +1,15 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+
 const { Pool } = pg;
 
-const createPool = () => {
-  return new Pool({
-    user: process.env.POSTGRES_USER,
-    host: process.env.DB_HOST,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
-    port: process.env.DB_PORT || 5432,
-  });
-};
+const createPool = () => new Pool({
+  user: process.env.POSTGRES_USER,
+  host: process.env.DB_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.DB_PORT || 5432,
+});
 
 let configFileName;
 
@@ -31,4 +30,4 @@ dotenv.config({ path: configFileName });
 
 const pool = createPool();
 
-export { pool };
+export default pool;

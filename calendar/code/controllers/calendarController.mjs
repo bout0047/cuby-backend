@@ -1,5 +1,5 @@
-import { pool } from '../db/index.js';
-import CalendarEntry from '../models/CalendarEntry.mjs';
+import pool from '../db/index';
+import CalendarEntry from '../models/CalendarEntry';
 
 const getCalendarEntries = async (req, res) => {
   try {
@@ -21,7 +21,7 @@ const createCalendarEntry = async (req, res) => {
 
     const result = await pool.query(
       'INSERT INTO calendar_entries (userId, eventId, datetime) VALUES ($1, $2, $3) RETURNING *',
-      [userId, eventId, datetime]
+      [userId, eventId, datetime],
     );
 
     const newEntry = result.rows[0];
@@ -40,7 +40,7 @@ const updateEntry = async (req, res) => {
 
     const result = await pool.query(
       'UPDATE calendar_entries SET datetime = $1 WHERE eventId = $2 AND userId = $3 RETURNING *',
-      [datetime, eventId, userId]
+      [datetime, eventId, userId],
     );
 
     const updatedEntry = result.rows[0];
@@ -71,4 +71,6 @@ const deleteEntry = async (req, res) => {
   }
 };
 
-export { getCalendarEntries, createCalendarEntry, updateEntry, deleteEntry}
+export {
+  getCalendarEntries, createCalendarEntry, updateEntry, deleteEntry,
+};
