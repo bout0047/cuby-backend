@@ -48,8 +48,10 @@ const createProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
+  console.log(req.body);
   const profileId = req.params.id;
   const { name, email, goals, stats, interests } = req.body;
+  console.log(name, email, goals, stats, interests);
 
   try {
     const result = await pool.query(
