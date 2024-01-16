@@ -4,7 +4,8 @@ import dotenv from 'dotenv';
 
 import {
   createUser,
-  authenticateUser
+  authenticateUser, 
+  getUserByGoogleId
 } from '../controllers/authController.mjs';
 
 const router = express.Router();
@@ -48,13 +49,12 @@ router.get('/auth/callback', async (req, res) => {
         Authorization: `Bearer ${googleAccessToken}`,
       },
     });
-    
-    console.log(googleUserInfo);
 
-    const authToken = generateToken(existingUser || { googleId: googleUserInfo.data.id });
-    console.log(authToken);
-    // Return the token in the response
-    res.json({ token: authToken, redirectUrl: '/home' });
+    const userId = googleUserInfo.data.id;
+    console.log('Google user ID: ', userId);
+    
+
+    res.redirect('http://localhost:3011/redirect/' + userId);
 
   } catch (error) {
     console.error('Error exchanging code for token:', error.message);

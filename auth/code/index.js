@@ -1,5 +1,4 @@
 import express from 'express';
-import session from 'express-session';
 import cors from 'cors';
 import { pool } from './db/index.js';
 import authRouter from './routes/router.mjs';
@@ -11,11 +10,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(session({ 
-  secret: process.env.SECRET_KEY,
-  resave: false,
-  saveUninitialized: true
-}));
 app.use(cors());
 
 const initDB = async () => {
