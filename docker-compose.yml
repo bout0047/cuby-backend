@@ -22,7 +22,7 @@ services:
     env_file:
       - ./auth/code/.env.${NODE_ENV}
     ports:
-      - "5434:5434"  # Updated the port to match the default PostgreSQL port
+      - "5434:5434" 
     command:
       - -p 5434
     networks:
@@ -52,7 +52,7 @@ services:
     env_file:
       - ./events/code/.env.${NODE_ENV}
     ports:
-      - "5432:5432"  # Updated the port to match the default PostgreSQL port
+      - "5432:5432"
     networks:
       - mscuby
 
@@ -82,7 +82,7 @@ services:
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
     ports:
-      - "5400:5400"  # Updated the port to match the default PostgreSQL port
+      - "5400:5400"
     command:
       - -p 5400
     networks:
