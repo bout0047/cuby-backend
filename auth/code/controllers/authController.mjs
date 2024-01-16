@@ -1,12 +1,9 @@
 import { pool } from '../db/index.js';
 import User from '../models/User.mjs';
-import cookieParser from 'cookie-parser'
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 
 //dotenv.config({ path: '../.env.development' });
-
-const { SECRET_KEY } = process.env;
 
 // Get all users
 const getAllUsers = async (req, res) => {
@@ -16,6 +13,24 @@ const getAllUsers = async (req, res) => {
     res.json(users);
   } catch (error) {
     console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal server fetch error' });
+  }
+};
+
+const getUserByGoogleId = async (req, res) => {
+  const { googleId } = req.params;
+
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE googleId = $1', [googleId]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = new User(result.rows[0]);
+    res.json(user);
+  } catch (error) {
+    console.error('Error fetching user by Google ID:', error);
     res.status(500).json({ error: 'Internal server fetch error' });
   }
 };
@@ -34,11 +49,10 @@ const createUser = async (req, res) => {
       }
 
       // Create a new user entry using the Google ID
-      const result = await pool.query('INSERT INTO users(googleId, username) VALUES($1, $2) RETURNING *', [googleId, username]);
+      const result = await pool.query('INSERT INTO users(googleId) VALUES($1) RETURNING *', [googleId]);
       const newUser = new User(result.rows[0]);
-      const token = jwt.sign({ userId: newUser.id }, SECRET_KEY, { expiresIn: '1h' });
-
-      return res.json({ token });
+      const userId = newUser.id;
+      return res.json({ userId });
     }  
 
     const existingUser = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -91,4 +105,4 @@ const authenticateUser = async (req, res) => {
   }
 };
 
-export { getAllUsers, createUser, authenticateUser };
+export { getAllUsers, getUserByGoogleId, createUser, authenticateUser };
