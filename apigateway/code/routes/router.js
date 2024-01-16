@@ -51,6 +51,17 @@ const eventProxy = createProxyMiddleware({
   onProxyReq: fixRequestBody,
 });
 
+const calendarProxy = createProxyMiddleware({
+  target: 'http://calendar-ms:3015',
+  changeOrigin: true,
+  onProxyReq: (proxyReq, req, res) => {
+    const userId = 223;
+    proxyReq.setHeader('userid', userId);
+
+    fixRequestBody(proxyReq, req, res);
+  },
+});
+
 const profileProxy = createProxyMiddleware({
   target: 'http://profile-ms:3012',
   changeOrigin: true,
@@ -77,5 +88,6 @@ router.get('/redirect/:userId', (req, res) => {
 router.use('/auth', cors(), authProxy);
 router.use('/events', cors(), authenticate, eventProxy);
 router.use('/profiles', cors(), authenticate, profileProxy);
+router.use('/calendar', cors(), authenticate, calendarProxy);
 
 export default router;
