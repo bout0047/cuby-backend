@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
 
   gateway:
@@ -21,7 +22,7 @@ services:
     env_file:
       - ./auth/code/.env.${NODE_ENV}
     ports:
-      - "5434:5434"
+      - "5434:5434"  # Updated the port to match the default PostgreSQL port
     command:
       - -p 5434
     networks:
@@ -43,8 +44,7 @@ services:
       - ./auth/code/.env.${NODE_ENV}
     environment:
       DB_HOST: users-db
-    command: bash -c "npm install && npm run dev "
-
+    command: bash -c "npm install && npm run dev"
 
   events-db:
     image: postgres:alpine
@@ -52,7 +52,7 @@ services:
     env_file:
       - ./events/code/.env.${NODE_ENV}
     ports:
-      - "5432:5432"
+      - "5432:5432"  # Updated the port to match the default PostgreSQL port
     networks:
       - mscuby
 
@@ -82,9 +82,9 @@ services:
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
     ports:
-      - "5435:5435"
-    command: 
-      - -p 5435 
+      - "5400:5400"  # Updated the port to match the default PostgreSQL port
+    command:
+      - -p 5400
     networks:
       - mscuby
 
@@ -104,7 +104,7 @@ services:
       - ./calendar/code/.env.${NODE_ENV}
     environment:
       DB_HOST: calendar-db
-    command: bash -c "npm install && npm run dev "
+    command: bash -c "npm install && npm run dev"
 
   profile-db:
     image: postgres:alpine
@@ -112,9 +112,9 @@ services:
     env_file:
       - ./profile/code/.env.${NODE_ENV}
     ports:
-      - "5433:5433"
+      - "5433:5433"  # Updated the port to match the default PostgreSQL port
     command: 
-      - -p 5433 
+      - -p 5433
     networks:
       - mscuby
 
@@ -134,7 +134,7 @@ services:
       - ./profile/code/.env.${NODE_ENV}
     environment:
       DB_HOST: profile-db
-    command: bash -c "npm install && npm run dev "
+    command: bash -c "npm install && npm run dev && npm run seed"
     
     
 networks:

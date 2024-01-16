@@ -1,5 +1,5 @@
-import { pool } from '../db/index.js';
-import Profile from '../models/Profile.mjs'; // Update the model import if needed
+import pool from '../db/index.js';
+import Profile from '../models/Profile.mjs'; 
 
 const getAllProfiles = async (req, res) => {
   try {

@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import pool from '../db/index.js';
 import User from '../models/User.mjs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';

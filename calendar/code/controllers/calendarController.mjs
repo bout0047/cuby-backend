@@ -1,5 +1,5 @@
-import pool from '../db/index';
-import CalendarEntry from '../models/CalendarEntry';
+import pool from '../db/index.js';
+import CalendarEntry from '../models/CalendarEntry.mjs';
 
 const getCalendarEntries = async (req, res) => {
   try {

@@ -1,7 +1,7 @@
 // start.js setup from learnnode.com by Wes Bos
 import express from 'express';
 import * as dotenv from 'dotenv';
-import indexRouter from './routes/profile';
+import indexRouter from './routes/profile.mjs';
 
 dotenv.config({ path: 'variables.env' });
 

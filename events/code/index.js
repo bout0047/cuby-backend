@@ -1,6 +1,6 @@
 import express from 'express';
-import pool from './db/index';
-import eventsRouter from './routes/events';
+import pool from './db/index.js';
+import eventsRouter from './routes/events.mjs';
 
 const app = express();
 const port = process.env.PORT || 3000;
