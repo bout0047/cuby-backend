@@ -1,6 +1,6 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import scrapeEvents from '../scraper';
+import scrapeEvents from '../scraper.js';
 
 const { Pool } = pg;
 
