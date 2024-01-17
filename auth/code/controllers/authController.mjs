@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import pool from '../db/index.js';
 import User from '../models/User.mjs';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
