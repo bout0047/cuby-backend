@@ -70,14 +70,13 @@ const createUser = async (req, res) => {
 
     const newUser = new User(result.rows[0]);
     
-    res.status(200).json;
+    res.redirect('http://localhost:3011/redirect/' + newUser.id);
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Authenticate a user and generate a token
 const authenticateUser = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -91,14 +90,13 @@ const authenticateUser = async (req, res) => {
 
     const user = new User(result.rows[0]);
 
-    // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed. Incorrect password.' });
     }
 
-    res.status(200).json;
+    res.redirect('http://localhost:3011/redirect/' + user.id);
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.status(500).json({ error: 'Internal server error' });

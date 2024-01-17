@@ -85,6 +85,12 @@ router.get('/redirect/:userId', (req, res) => {
   res.redirect('http://localhost:5173/home');
 });
 
+router.get('/logout', (req, res) => {
+  req.session.destroy;
+  res.redirect('http://localhost:5173');
+});
+
+
 router.use('/auth', cors(), authProxy);
 router.use('/events', cors(), authenticate, eventProxy);
 router.use('/profiles', cors(), authenticate, profileProxy);

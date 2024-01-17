@@ -51,6 +51,7 @@ router.get('/auth/callback', async (req, res) => {
     });
 
     const userId = googleUserInfo.data.id;
+    
     console.log('Google user ID: ', userId);
     
 
