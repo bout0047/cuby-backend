@@ -15,14 +15,24 @@ const getCalendarEntries = async (req, res) => {
 
 const createCalendarEntry = async (req, res) => {
   try {
-    const { eventId, datetime } = req.body;
+    console.log("attempt");
+    const { eventId, datetime, name } = req.body;
     console.log(req.body, eventId, datetime);
     const userId = req.headers.userid;
 
-    const result = await pool.query(
-      'INSERT INTO calendar_entries (userId, eventId, datetime) VALUES ($1, $2, $3) RETURNING *',
-      [userId, eventId, datetime],
-    );
+    let result;
+
+    if (eventId) {
+      result = await pool.query(
+        'INSERT INTO calendar_entries (userId, eventId, datetime) VALUES ($1, $2, $3) RETURNING *',
+        [userId, eventId, datetime],
+      );
+    } else if (name) {
+      result = await pool.query(
+        'INSERT INTO calendar_entries (userId, name, datetime) VALUES ($1, $2, $3) RETURNING *',
+        [userId, name, datetime],
+      );
+    }
 
     const newEntry = result.rows[0];
     console.log(newEntry);
