@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from './db/index';
+import pool from './db/index.js';
 import calendarRouter from './routes/calendar';
 
 const app = express();

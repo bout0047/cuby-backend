@@ -1,5 +1,5 @@
 import express from 'express';
-import pool from './db/index';
+import pool from './db/index.js';
 import profileRouter from './routes/profile';
 
 const app = express();
