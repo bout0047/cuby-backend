@@ -88,7 +88,6 @@ const seedDatabase = async () => {
         try {
           const result = await pool.query(insertQuery);
           const insertedEvent = result.rows[0];
-          console.log(`Inserted event with ID ${insertedEvent.id}`);
         } catch (err) {
           console.error('Error inserting event into the database:', err);
         }

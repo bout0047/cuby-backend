@@ -50,9 +50,8 @@ const createUser = async (req, res) => {
 
       // Create a new user entry using the Google ID
       const result = await pool.query('INSERT INTO users(googleId) VALUES($1) RETURNING *', [googleId]);
-      const newUser = new User(result.rows[0]);
-      const userId = newUser.id;
-      return res.json({ userId });
+      const user = new User(result.rows[0]);
+      return res.status(200).json({ user });
     }  
 
     const existingUser = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -68,9 +67,10 @@ const createUser = async (req, res) => {
     // Store the user in the database
     const result = await pool.query('INSERT INTO users(username, password) VALUES($1, $2) RETURNING *', [username, hashedPassword]);
 
-    const newUser = new User(result.rows[0]);
-    
-    res.redirect('http://localhost:3011/redirect/' + newUser.id);
+    const user = new User(result.rows[0]);
+    res.set('X-User-ID', user.id);
+    console.log('Newly made user: ', user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -95,8 +95,7 @@ const authenticateUser = async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed. Incorrect password.' });
     }
-
-    res.redirect('http://localhost:3011/redirect/' + user.id);
+    return res.status(200).json({ user });
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.status(500).json({ error: 'Internal server error' });
