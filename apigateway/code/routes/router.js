@@ -18,7 +18,7 @@ const authenticateMiddleware = (req, res, next) => {
   }
 
   delete req.body.cubySession;
-  
+
   const secretKey = process.env.SECRET_KEY || 'your-secret-key';
 
   jwt.verify(token, secretKey, (err, decoded) => {
