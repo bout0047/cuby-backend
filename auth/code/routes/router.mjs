@@ -1,4 +1,5 @@
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import axios from 'axios';
 import dotenv from 'dotenv';
 
@@ -9,6 +10,7 @@ import {
 } from '../controllers/authController.mjs';
 
 const router = express.Router();
+router.use(cookieParser());
 
 // Google OAuth Configuration
 const googleConfig = {
@@ -52,10 +54,8 @@ router.get('/auth/callback', async (req, res) => {
 
     const userId = googleUserInfo.data.id;
     
-    console.log('Google user ID: ', userId);
-    
-
-    res.redirect('http://localhost:3011/redirect/' + userId);
+    console.log('Google user ID: ', userId);;
+    res.redirect('http://localhost:5173/home/');
 
   } catch (error) {
     console.error('Error exchanging code for token:', error.message);

@@ -59,8 +59,6 @@ const startScrapingWithInterval = () => {
         console.log('No internet connection. Skipping scraping.');
         return;
       }
-
-      const events = await scrapeEvents();
       // Now you can do whatever you want with the events array
     } catch (error) {
       console.error('Error:', error);
