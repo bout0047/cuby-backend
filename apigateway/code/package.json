@@ -18,6 +18,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.3",
     "http-proxy-middleware": "^2.0.6",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0"
   },
   "devDependencies": {

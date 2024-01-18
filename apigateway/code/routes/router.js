@@ -1,50 +1,58 @@
 import express from 'express';
-import session from 'express-session';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { createProxyMiddleware, fixRequestBody } from 'http-proxy-middleware';
 
 const router = express.Router();
 
-const sessionConfig = session({
-  secret: process.env.SESSION_SECRET || 'your-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false },
-});
-
 router.use(cookieParser());
-router.use(sessionConfig);
 
-const authenticate = (req, res, next) => {
-  const sessionId = req.cookies.sessionId;
-  if (sessionId) {
-    req.sessionStore.get(sessionId, (err, sessionData) => {
-      if (err) {
-        console.error(err);
-        res.status(500).json({ message: 'Internal Server Error' });
-        return;
-      }
+const authenticateMiddleware = (req, res, next) => {
+  const token = req.body.cubySession;
+  console.log(token);
 
-      if (sessionData && sessionData.userId) {
-        req.userId = sessionData.userId;
-
-        next(); 
-      } else {
-        res.status(401).json({ message: 'Unauthorized' });
-      }
-    });
-  } else {
-    res.status(401).json({ message: 'Unauthorized' });
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized - Token missing' });
   }
+
+  delete req.body.cubySession;
+  
+  const secretKey = process.env.SECRET_KEY || 'your-secret-key';
+
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+    }
+
+    // Attach the user ID to the request body
+    req.body.userId = decoded.userId;
+    next();
+  });
 };
 
 const authProxy = createProxyMiddleware({
   target: 'http://auth-ms:3013',
   changeOrigin: true,
   onProxyReq: fixRequestBody,
+  onProxyRes: (proxyRes, req, res) => {
+    const userId = proxyRes.headers['x-user-id'];
+    console.log(userId);
+
+    if (userId) {
+      const secretKey = process.env.SECRET_KEY || 'your-secret-key';
+      const token = jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
+
+      const responseBody = {
+        token,
+      };
+
+      res.end(JSON.stringify(responseBody));
+    }
+  },
 })
+
 const eventProxy = createProxyMiddleware({
   target: 'http://events-ms:3010',
   changeOrigin: true,
@@ -54,12 +62,7 @@ const eventProxy = createProxyMiddleware({
 const calendarProxy = createProxyMiddleware({
   target: 'http://calendar-ms:3015',
   changeOrigin: true,
-  onProxyReq: (proxyReq, req, res) => {
-    const userId = 223;
-    proxyReq.setHeader('userid', userId);
-
-    fixRequestBody(proxyReq, req, res);
-  },
+  onProxyReq: fixRequestBody,
 });
 
 const profileProxy = createProxyMiddleware({
@@ -74,26 +77,13 @@ router.get('/', (req, res) => {
 
 router.use(cors());
 
-router.get('/redirect/:userId', (req, res) => {
-  const { userId } = req.params;
-  console.log('User ', userId);
-  req.session.userId = userId;
-
-  res.cookie('cubySession', req.sessionID);
-  
-  console.log('Sessionuser ', req.session.userId);
-  res.redirect('http://localhost:5173/home');
-});
-
 router.get('/logout', (req, res) => {
-  req.session.destroy;
   res.redirect('http://localhost:5173');
 });
 
-
 router.use('/auth', cors(), authProxy);
-router.use('/events', cors(), authenticate, eventProxy);
-router.use('/profiles', cors(), authenticate, profileProxy);
-router.use('/calendar', cors(), authenticate, calendarProxy);
+router.use('/events', authenticateMiddleware, cors(), eventProxy);
+router.use('/profiles', authenticateMiddleware, cors(), profileProxy);
+router.use('/calendar', authenticateMiddleware, cors(), calendarProxy);
 
 export default router;
