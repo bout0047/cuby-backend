@@ -10,6 +10,7 @@ const router = express.Router();
 router.use(cookieParser());
 
 const authenticateMiddleware = (req, res, next) => {
+<<<<<<< HEAD
   const { method, cubySession } = req.body;
   console.log(req.body);
   console.log(req.method);
@@ -35,6 +36,30 @@ const authenticateMiddleware = (req, res, next) => {
       return res.status(401).json({ error: 'Unauthorized - Invalid token' });
     }
     console.log(decoded);
+=======
+  console.log(req.body);
+  const method = req.body.method;
+
+  if (method) {
+    req.method = method.toUpperCase();
+  }
+  const token = req.body.token;
+  console.log(token);
+
+  if (!token) {
+    return res.status(401).json({ error: 'Unauthorized - Token missing' });
+  }
+
+  delete req.body.cubySession;
+
+  const secretKey = process.env.SECRET_KEY || 'your-secret-key';
+
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+    }
+
+>>>>>>> b6284470b90477d751ef44e3f00c5d01e1637d82
     // Attach the user ID to the request body
     req.body.userId = decoded.userId;
     next();
