@@ -10,7 +10,13 @@ const router = express.Router();
 router.use(cookieParser());
 
 const authenticateMiddleware = (req, res, next) => {
-  const token = req.body.cubySession;
+  console.log(req.body);
+  const method = req.body.method;
+
+  if (method) {
+    req.method = method.toUpperCase();
+  }
+  const token = req.body.token;
   console.log(token);
 
   if (!token) {
@@ -43,7 +49,7 @@ const authProxy = createProxyMiddleware({
     if (userId) {
       const secretKey = process.env.SECRET_KEY || 'your-secret-key';
       const token = jwt.sign({ userId }, secretKey, { expiresIn: '1h' });
-
+      console.log(token);
       const responseBody = {
         token,
       };
@@ -51,7 +57,7 @@ const authProxy = createProxyMiddleware({
       res.end(JSON.stringify(responseBody));
     }
   },
-})
+});
 
 const eventProxy = createProxyMiddleware({
   target: 'http://events-ms:3010',
@@ -82,7 +88,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.use('/auth', cors(), authProxy);
-router.use('/events', authenticateMiddleware, cors(), eventProxy);
+router.use('/events', cors(), eventProxy);
 router.use('/profiles', authenticateMiddleware, cors(), profileProxy);
 router.use('/calendar', authenticateMiddleware, cors(), calendarProxy);
 
