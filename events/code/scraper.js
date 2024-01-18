@@ -61,7 +61,6 @@ const startScrapingWithInterval = () => {
       }
 
       const events = await scrapeEvents();
-      console.log('Scraped Events:', events);
       // Now you can do whatever you want with the events array
     } catch (error) {
       console.error('Error:', error);

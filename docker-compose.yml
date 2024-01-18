@@ -1,7 +1,7 @@
 version: '3.8'
-
+ 
 services:
-
+ 
   gateway:
     container_name: apigateway
     build: ./apigateway
@@ -13,7 +13,7 @@ services:
       - "3011:3011"
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
-
+ 
   users-db:
     image: postgres:alpine
     container_name: users-db
@@ -22,12 +22,12 @@ services:
     env_file:
       - ./auth/code/.env.${NODE_ENV}
     ports:
-      - "5434:5434"  # Updated the port to match the default PostgreSQL port
+      - "5434:5434"
     command:
       - -p 5434
     networks:
       - mscuby
-    
+   
   auth-ms:
     container_name: auth-ms
     depends_on:
@@ -45,17 +45,17 @@ services:
     environment:
       DB_HOST: users-db
     command: bash -c "npm install && npm run dev"
-
+ 
   events-db:
     image: postgres:alpine
     container_name: events-db
     env_file:
       - ./events/code/.env.${NODE_ENV}
     ports:
-      - "5432:5432"  # Updated the port to match the default PostgreSQL port
+      - "5432:5432"
     networks:
       - mscuby
-
+ 
   events-ms:
     container_name: events-ms
     depends_on:
@@ -73,7 +73,7 @@ services:
     environment:
       DB_HOST: events-db
     command: bash -c "npm install && npm run dev"
-
+ 
   calendar-db:
     image: postgres:alpine
     container_name: calendar-db
@@ -82,12 +82,12 @@ services:
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
     ports:
-      - "5400:5400"  # Updated the port to match the default PostgreSQL port
+      - "5400:5400"
     command:
       - -p 5400
     networks:
       - mscuby
-
+ 
   calendar-ms:
     container_name: calendar-ms
     depends_on:
@@ -105,21 +105,19 @@ services:
     environment:
       DB_HOST: calendar-db
     command: bash -c "npm install && npm run dev"
-
+ 
   profile-db:
     image: postgres:alpine
     container_name: profile-db
-    volumes:
-      - ./profile/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - ./profile/code/.env.${NODE_ENV}
     ports:
       - "5433:5433"  # Updated the port to match the default PostgreSQL port
-    command: 
+    command:
       - -p 5433
     networks:
       - mscuby
-
+ 
   profile-ms:
     container_name: profile-ms
     depends_on:
@@ -137,8 +135,9 @@ services:
     environment:
       DB_HOST: profile-db
     command: bash -c "npm install && npm run dev && npm run seed"
-    
-    
+   
+   
 networks:
   mscuby:
     driver: bridge
+ 

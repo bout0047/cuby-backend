@@ -46,7 +46,6 @@ const createEvent = async (req, res) => {
 
       try {
         await pool.query(query);
-        console.log(`Inserted row with id`);
       } catch (err) {
         console.error('Error inserting event into the database:', err);
       }
