@@ -1,13 +1,14 @@
 import express from 'express';
+import cors from 'cors';
 import pool from './db/index.js';
-import userRouter from './routes/router.mjs';
+import authRouter from './routes/router.mjs';
+import dotenv from 'dotenv';
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-
-app.use('/', userRouter);
+app.use(cors());
 
 const initDB = async () => {
   try {
@@ -23,8 +24,8 @@ const initDB = async () => {
 // Initialize the database and start the server
 initDB()
   .then(() => {
-    // Use the eventsRouter after the database connection is established
-    app.use('/', userRouter);
+    // Use the Router after the database connection is established
+    app.use('/', authRouter);
 
     app.listen(port, () => {
       console.log(`Server is running at http://localhost:${port}`);

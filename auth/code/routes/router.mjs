@@ -1,19 +1,71 @@
 import express from 'express';
+import axios from 'axios';
+import dotenv from 'dotenv';
+
 import {
-  getAllUsers,
   createUser,
-  authenticateUser
-} from '../controllers/userController.mjs';
+  authenticateUser, 
+  getUserByGoogleId
+} from '../controllers/authController.mjs';
 
 const router = express.Router();
 
-// GET all users
-router.get('/users/', getAllUsers);
+// Google OAuth Configuration
+const googleConfig = {
+  clientId: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  redirectUri: process.env.GOOGLE_REDIRECT_URI,
+};
 
-// POST create a new user
-router.post('/register/', createUser);
+router.get('/auth/google', async (req, res) => {
+  console.log('check1')
+  const { clientId, redirectUri } = googleConfig;
+  const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=openid profile email&prompt=consent`;
+  res.json({ redirectUrl: authUrl });
+});
+
+router.get('/auth/callback', async (req, res) => {
+  console.log('hello')
+  const { code } = req.query;
+  console.log(code);
+
+  try {
+    const tokenResponse = await axios.post(
+      'https://oauth2.googleapis.com/token',
+      {
+        code,
+        client_id: googleConfig.clientId,
+        client_secret: googleConfig.clientSecret,
+        redirect_uri: googleConfig.redirectUri,
+        grant_type: 'authorization_code',
+      }
+    );
+
+    const googleAccessToken = tokenResponse.data.access_token;
+
+    // Use the access token to get user info from Google
+    const googleUserInfo = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: {
+        Authorization: `Bearer ${googleAccessToken}`,
+      },
+    });
+
+    const userId = googleUserInfo.data.id;
+    console.log('Google user ID: ', userId);
+    
+
+    res.redirect('http://localhost:3011/redirect/' + userId);
+
+  } catch (error) {
+    console.error('Error exchanging code for token:', error.message);
+    res.redirect('http://localhost:5173/home')
+  }
+});
+
+// POST register user and generate token
+router.post('/auth/register/', createUser);
 
 // POST authenticate user and generate token
-router.post('/login/', authenticateUser);
+router.post('/auth/login/', authenticateUser);
 
 export default router;
