@@ -10,28 +10,31 @@ const router = express.Router();
 router.use(cookieParser());
 
 const authenticateMiddleware = (req, res, next) => {
+  const { method, cubySession } = req.body;
   console.log(req.body);
-  const method = req.body.method;
+  console.log(req.method);
+
+  if (!cubySession) { 
+    console.log('no token');
+    return res.status(401).json({ error: 'Unauthorized - Token missing' });
+  }
+
+  console.log(cubySession);
 
   if (method) {
     req.method = method.toUpperCase();
   }
-  const token = req.body.token;
-  console.log(token);
 
-  if (!token) {
-    return res.status(401).json({ error: 'Unauthorized - Token missing' });
-  }
-
-  delete req.body.cubySession;
+  delete req.body.token;
 
   const secretKey = process.env.SECRET_KEY || 'your-secret-key';
 
-  jwt.verify(token, secretKey, (err, decoded) => {
+  jwt.verify(cubySession, secretKey, (err, decoded) => {
     if (err) {
+      console.log('invalid token');
       return res.status(401).json({ error: 'Unauthorized - Invalid token' });
     }
-
+    console.log(decoded);
     // Attach the user ID to the request body
     req.body.userId = decoded.userId;
     next();
@@ -88,7 +91,7 @@ router.get('/logout', (req, res) => {
 });
 
 router.use('/auth', cors(), authProxy);
-router.use('/events', cors(), eventProxy);
+router.use('/events', authenticateMiddleware, cors(), eventProxy);
 router.use('/profiles', authenticateMiddleware, cors(), profileProxy);
 router.use('/calendar', authenticateMiddleware, cors(), calendarProxy);
 

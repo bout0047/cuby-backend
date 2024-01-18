@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import * as dotenv from 'dotenv';
 
-import indexRouter from './routes/index.js';
+import indexRouter from './routes/router.js';
 
 dotenv.config({ path: 'variables.env' });
 

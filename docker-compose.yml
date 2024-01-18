@@ -109,6 +109,8 @@ services:
   profile-db:
     image: postgres:alpine
     container_name: profile-db
+    volumes:
+      - ./profile/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - ./profile/code/.env.${NODE_ENV}
     ports:

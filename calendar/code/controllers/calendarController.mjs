@@ -3,10 +3,12 @@ import CalendarEntry from '../models/CalendarEntry.mjs';
 
 const getCalendarEntries = async (req, res) => {
   try {
-    const userId = req.headers.userid;
+    console.log("I want entries for user");
+    const { userId } = req.body;
     const result = await pool.query('SELECT * FROM calendar_entries WHERE userId = $1', [userId]);
     const entries = result.rows.map((dbEntry) => new CalendarEntry(dbEntry));
-    res.json(entries);
+    console.log(entries);
+    res.status(200).json(entries);
   } catch (error) {
     console.error('Error fetching calendar entries:', error);
     res.status(500).json({ error: 'Internal server fetch error' });
@@ -16,9 +18,8 @@ const getCalendarEntries = async (req, res) => {
 const createCalendarEntry = async (req, res) => {
   try {
     console.log("attempt");
-    const { eventId, datetime, name } = req.body;
-    console.log(req.body, eventId, datetime);
-    const userId = req.headers.userid;
+    const { userId, eventId, datetime, name } = req.body;
+    console.log(userId, eventId, datetime);
 
     let result;
 
