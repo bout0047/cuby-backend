@@ -1,16 +1,7 @@
 version: '3.8'
+ 
 services:
-  appointments:
-    container_name: events
-    build: ./events
-    volumes:
-      - ./events/code:/usr/src/app
-    networks:
-      - mscuby
-    ports:
-      - "3010:3010"
-    working_dir: /usr/src/app
-    command: bash -c "npm install && npm run dev"
+ 
   gateway:
     container_name: apigateway
     build: ./apigateway
@@ -22,7 +13,133 @@ services:
       - "3011:3011"
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
-
+ 
+  users-db:
+    image: postgres:alpine
+    container_name: users-db
+    volumes:
+      - ./auth/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./auth/code/.env.${NODE_ENV}
+    ports:
+      - "5434:5434"
+    command:
+      - -p 5434
+    networks:
+      - mscuby
+   
+  auth-ms:
+    container_name: auth-ms
+    depends_on:
+      - users-db
+    build: ./auth
+    volumes:
+      - ./auth/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3013:3013"
+    working_dir: /usr/src/app
+    env_file:
+      - ./auth/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: users-db
+    command: bash -c "npm install && npm run dev"
+ 
+  events-db:
+    image: postgres:alpine
+    container_name: events-db
+    env_file:
+      - ./events/code/.env.${NODE_ENV}
+    ports:
+      - "5432:5432"
+    networks:
+      - mscuby
+ 
+  events-ms:
+    container_name: events-ms
+    depends_on:
+      - events-db
+    build: ./events
+    volumes:
+      - ./events/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3010:3010"
+    working_dir: /usr/src/app
+    env_file:
+      - ./events/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: events-db
+    command: bash -c "npm install && npm run dev"
+ 
+  calendar-db:
+    image: postgres:alpine
+    container_name: calendar-db
+    volumes:
+      - ./calendar/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./calendar/code/.env.${NODE_ENV}
+    ports:
+      - "5400:5400"
+    command:
+      - -p 5400
+    networks:
+      - mscuby
+ 
+  calendar-ms:
+    container_name: calendar-ms
+    depends_on:
+      - calendar-db
+    build: ./calendar
+    volumes:
+      - ./calendar/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3015:3015"
+    working_dir: /usr/src/app
+    env_file:
+      - ./calendar/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: calendar-db
+    command: bash -c "npm install && npm run dev"
+ 
+  profile-db:
+    image: postgres:alpine
+    container_name: profile-db
+    volumes:
+      - ./profile/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    env_file:
+      - ./profile/code/.env.${NODE_ENV}
+    ports:
+      - "5433:5433"  # Updated the port to match the default PostgreSQL port
+    command:
+      - -p 5433
+    networks:
+      - mscuby
+ 
+  profile-ms:
+    container_name: profile-ms
+    depends_on:
+      - profile-db
+    build: ./profile
+    volumes:
+      - ./profile/code:/usr/src/app
+    networks:
+      - mscuby
+    ports:
+      - "3012:3012"
+    working_dir: /usr/src/app
+    env_file:
+      - ./profile/code/.env.${NODE_ENV}
+    environment:
+      DB_HOST: profile-db
+    command: bash -c "npm install && npm run dev && npm run seed"
+   
+   
 networks:
   mscuby:
     driver: bridge
+ 

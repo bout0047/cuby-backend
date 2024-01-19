@@ -7,23 +7,29 @@
   "scripts": {
     "dev": "nodemon index.js",
     "dev win": "./node_modules/.bin/nodemon index.js",
-    "seed": "node seeders/eventSeeder.mjs"
+    "seed": "node seeders/userSeeder.mjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/preset-env": "^7.23.3",
     "axios": "^1.6.5",
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.2",
-    "cheerio": "^1.0.0-rc.12",
+    "connect-pg-simple": "^9.0.1",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.2",
     "express": "^4.17.1",
-    "html-to-text": "^9.0.5",
-    "is-online": "^10.0.0",
+    "express-session": "^1.17.3",
+    "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.3",
-    "sinon": "^17.0.1",
-    "striptags": "^3.2.0"
+    "pg-promise": "^11.5.4"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
