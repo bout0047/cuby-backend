@@ -1,6 +1,7 @@
 version: '3.8'
+ 
 services:
-
+ 
   gateway:
     container_name: apigateway
     build: ./apigateway
@@ -12,7 +13,7 @@ services:
       - "3011:3011"
     working_dir: /usr/src/app
     command: bash -c "npm install && npm run dev"
-
+ 
   users-db:
     image: postgres:alpine
     container_name: users-db
@@ -26,7 +27,7 @@ services:
       - -p 5434
     networks:
       - mscuby
-    
+   
   auth-ms:
     container_name: auth-ms
     depends_on:
@@ -43,9 +44,8 @@ services:
       - ./auth/code/.env.${NODE_ENV}
     environment:
       DB_HOST: users-db
-    command: bash -c "npm install && npm run dev "
-
-
+    command: bash -c "npm install && npm run dev"
+ 
   events-db:
     image: postgres:alpine
     container_name: events-db
@@ -55,7 +55,7 @@ services:
       - "5432:5432"
     networks:
       - mscuby
-
+ 
   events-ms:
     container_name: events-ms
     depends_on:
@@ -73,7 +73,7 @@ services:
     environment:
       DB_HOST: events-db
     command: bash -c "npm install && npm run dev"
-
+ 
   calendar-db:
     image: postgres:alpine
     container_name: calendar-db
@@ -82,12 +82,12 @@ services:
     env_file:
       - ./calendar/code/.env.${NODE_ENV}
     ports:
-      - "5435:5435"
-    command: 
-      - -p 5435 
+      - "5400:5400"
+    command:
+      - -p 5400
     networks:
       - mscuby
-
+ 
   calendar-ms:
     container_name: calendar-ms
     depends_on:
@@ -104,20 +104,22 @@ services:
       - ./calendar/code/.env.${NODE_ENV}
     environment:
       DB_HOST: calendar-db
-    command: bash -c "npm install && npm run dev "
-
+    command: bash -c "npm install && npm run dev"
+ 
   profile-db:
     image: postgres:alpine
     container_name: profile-db
+    volumes:
+      - ./profile/code/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     env_file:
       - ./profile/code/.env.${NODE_ENV}
     ports:
-      - "5433:5433"
-    command: 
-      - -p 5433 
+      - "5433:5433"  # Updated the port to match the default PostgreSQL port
+    command:
+      - -p 5433
     networks:
       - mscuby
-
+ 
   profile-ms:
     container_name: profile-ms
     depends_on:
@@ -134,9 +136,10 @@ services:
       - ./profile/code/.env.${NODE_ENV}
     environment:
       DB_HOST: profile-db
-    command: bash -c "npm install && npm run dev "
-    
-    
+    command: bash -c "npm install && npm run dev && npm run seed"
+   
+   
 networks:
   mscuby:
     driver: bridge
+ 

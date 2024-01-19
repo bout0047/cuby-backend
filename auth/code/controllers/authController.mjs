@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import pool from '../db/index.js';
 import User from '../models/User.mjs';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
@@ -50,9 +50,8 @@ const createUser = async (req, res) => {
 
       // Create a new user entry using the Google ID
       const result = await pool.query('INSERT INTO users(googleId) VALUES($1) RETURNING *', [googleId]);
-      const newUser = new User(result.rows[0]);
-      const userId = newUser.id;
-      return res.json({ userId });
+      const user = new User(result.rows[0]);
+      return res.status(200).json({ user });
     }  
 
     const existingUser = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
@@ -68,16 +67,16 @@ const createUser = async (req, res) => {
     // Store the user in the database
     const result = await pool.query('INSERT INTO users(username, password) VALUES($1, $2) RETURNING *', [username, hashedPassword]);
 
-    const newUser = new User(result.rows[0]);
-    
-    res.status(200).json;
+    const user = new User(result.rows[0]);
+    res.set('X-User-ID', user.id);
+    console.log('Newly made user: ', user);
+    return res.status(200).json(user);
   } catch (error) {
     console.error('Error creating user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Authenticate a user and generate a token
 const authenticateUser = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -91,14 +90,12 @@ const authenticateUser = async (req, res) => {
 
     const user = new User(result.rows[0]);
 
-    // Compare the provided password with the hashed password in the database
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Authentication failed. Incorrect password.' });
     }
-
-    res.status(200).json;
+    return res.status(200).json({ user });
   } catch (error) {
     console.error('Error authenticating user:', error);
     res.status(500).json({ error: 'Internal server error' });

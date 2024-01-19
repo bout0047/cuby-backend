@@ -1,52 +1,52 @@
-import { pool } from '../db/index.js';
+import pool from '../db/index.js';
 
 const seedData = [
   {
-    "name": "Pete Davidson",
-    "email": "Pete@bitches.com",
-    "goals": [],
-    "stats": [
-      "clicks", "5",
-      "stress", "37",
-      "exercises", "3",
+    name: 'Pete Davidson',
+    email: 'Pete@bitches.com',
+    goals: [],
+    stats: [
+      'clicks', '5',
+      'stress', '37',
+      'exercises', '3',
     ],
-    "interests": [
-      ["0", "Football", "true"],
-      ["1", "Basketball", "false"],
-      ["2", "Reading", "false"],
-      ["3", "Painting", "false"],
-      ["4", "Hiking", "true"],
-      ["5", "Games", "true"],
-      ["6", "Drawing", "true"],
-      ["7", "Cooking", "true"],
-      ["8", "Yoga", "true"],
-      ["9", "Writing", "true"],
-      ["10", "Music", "true"],
-      ["11", "Puzzle", "true"],
+    interests: [
+      ['0', 'Football', 'true'],
+      ['1', 'Basketball', 'false'],
+      ['2', 'Reading', 'false'],
+      ['3', 'Painting', 'false'],
+      ['4', 'Hiking', 'true'],
+      ['5', 'Games', 'true'],
+      ['6', 'Drawing', 'true'],
+      ['7', 'Cooking', 'true'],
+      ['8', 'Yoga', 'true'],
+      ['9', 'Writing', 'true'],
+      ['10', 'Music', 'true'],
+      ['11', 'Puzzle', 'true'],
     ],
   },
   {
-    "name": "Rondaldo",
-    "email": "Messi@dabest.com",
-    "goals": [],
-    "stats": [
-      "clicks", "5",
-      "stress", "37",
-      "exercises", "3",
+    name: 'Rondaldo',
+    email: 'Messi@dabest.com',
+    goals: [],
+    stats: [
+      'clicks', '5',
+      'stress', '37',
+      'exercises', '3',
     ],
-    "interests": [
-      ["0", "Football", "true"],
-      ["1", "Basketball", "false"],
-      ["2", "Reading", "false"],
-      ["3", "Painting", "false"],
-      ["4", "Hiking", "true"],
-      ["5", "Games", "true"],
-      ["6", "Drawing", "true"],
-      ["7", "Cooking", "true"],
-      ["8", "Yoga", "true"],
-      ["9", "Writing", "true"],
-      ["10", "Music", "true"],
-      ["11", "Puzzle", "true"],
+    interests: [
+      ['0', 'Football', 'true'],
+      ['1', 'Basketball', 'false'],
+      ['2', 'Reading', 'false'],
+      ['3', 'Painting', 'false'],
+      ['4', 'Hiking', 'true'],
+      ['5', 'Games', 'true'],
+      ['6', 'Drawing', 'true'],
+      ['7', 'Cooking', 'true'],
+      ['8', 'Yoga', 'true'],
+      ['9', 'Writing', 'true'],
+      ['10', 'Music', 'true'],
+      ['11', 'Puzzle', 'true'],
     ],
   },
 ];
@@ -68,7 +68,7 @@ const seedDatabase = async () => {
     for (const profile of seedData) {
       await pool.query(
         'INSERT INTO profile (name, email, goals, stats, interests) VALUES ($1, $2, $3, $4, $5)',
-        [profile.name, profile.email, profile.goals, profile.stats, profile.interests]
+        [profile.name, profile.email, profile.goals, profile.stats, profile.interests],
       );
     }
 

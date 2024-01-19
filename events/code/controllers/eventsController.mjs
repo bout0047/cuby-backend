@@ -1,4 +1,4 @@
-import { pool } from '../db/index.js';
+import pool from '../db/index.js';
 import Event from '../models/Event.mjs';
 
 const getAllEvents = async (req, res) => {
@@ -46,7 +46,6 @@ const createEvent = async (req, res) => {
 
       try {
         await pool.query(query);
-        console.log(`Inserted row with id`);
       } catch (err) {
         console.error('Error inserting event into the database:', err);
       }

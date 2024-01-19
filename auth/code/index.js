@@ -4,8 +4,6 @@ import pool from './db/index.js';
 import authRouter from './routes/router.mjs';
 import dotenv from 'dotenv';
 
-//dotenv.config({ path: '../.env.development' });
-
 const app = express();
 const port = process.env.PORT || 3000;
 

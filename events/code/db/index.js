@@ -1,6 +1,6 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import scrapeEvents from '../scraper';
+import scrapeEvents from '../scraper.js';
 
 const { Pool } = pg;
 
@@ -88,7 +88,6 @@ const seedDatabase = async () => {
         try {
           const result = await pool.query(insertQuery);
           const insertedEvent = result.rows[0];
-          console.log(`Inserted event with ID ${insertedEvent.id}`);
         } catch (err) {
           console.error('Error inserting event into the database:', err);
         }
