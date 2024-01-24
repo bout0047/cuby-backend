@@ -5,8 +5,7 @@ on:
     branches:
       - dev
       - setup/events-pipeline-58
-      - JamineEvents
-
+      - JasmineEvents
 jobs:
   build:
     runs-on: ubuntu-latest
