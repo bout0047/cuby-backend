@@ -26,7 +26,7 @@ jobs:
       - name: Check Node Modules
         run: docker-compose exec -T events-ms ls node_modules
 
-      - name: Run Seeder
+      - name: Run Test
         run: docker-compose exec -T events-ms npm run test
 
       - name: Stop Services
