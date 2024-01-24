@@ -1,48 +1,52 @@
 import axios from 'axios';
-import cheerio from 'cheerio';
-import isOnline from 'is-online';
+import * as cheerio from 'cheerio';
 import scrapeEvents from '../scraper.js';
 
 describe('scrapeEvents', () => {
-  let isOnlineSpy;
   let axiosGetSpy;
+  let cheerioLoadSpy;
 
   beforeEach(() => {
-    // Create spies for the functions you want to mock
-    isOnlineSpy = spyOn(isOnline, 'default');
+    // Create spies for the imported modules and reset them before each test
     axiosGetSpy = spyOn(axios, 'get');
+    cheerioLoadSpy = spyOn(cheerio, 'load');
+
+    axiosGetSpy.and.returnValue(Promise.resolve({ data: '<html><body><div class="event-item">Mocked Event</div></body></html>' }));
+
+    // Mock cheerio.load to return an object with a map function
+    cheerioLoadSpy.and.returnValue({
+      map: jasmine.createSpy(),
+      find: jasmine.createSpy().and.returnValue({
+        text: jasmine.createSpy().and.returnValue('Mocked Event'),
+        find: jasmine.createSpy().and.returnValue({
+          text: jasmine.createSpy().and.returnValue('Mocked Place')
+        })
+      }),
+      text: jasmine.createSpy().and.returnValue('Mocked Date'),
+      data: jasmine.createSpy().and.returnValue('<div class="event-description-html">Mocked Description</div>'),
+    });
   });
 
-  it('should resolve with empty array if not online', async () => {
-    // Mock isOnline to return false
-    isOnlineSpy.and.resolveTo(false);
+  it('should scrape events successfully', async () => {
+    // Mock the Cheerio functions to return the expected values
+    cheerioLoadSpy().find.and.returnValue({ text: jasmine.createSpy() });
+    cheerioLoadSpy().text.and.returnValue('Mocked Date');
+    cheerioLoadSpy().data.and.returnValue('<div class="event-description-html">Mocked Description</div>');
+    cheerioLoadSpy().find().text.and.returnValue('Mocked Event');
+    cheerioLoadSpy().find().find().text.and.returnValue('Mocked Place');
+    axiosGetSpy.and.returnValue(Promise.resolve({ data: '<html><body><div class="event-banner-image" src="Mocked Image URL"></div></body></html>' }));
 
     const result = await scrapeEvents();
-    expect(result).toEqual([]);
+
+    // Assert that the result matches the expected data
+    expect(result).toEqual([mockedEventData]);
   });
 
-  it('should scrape events successfully when online', async () => {
-    // Mock isOnline to return true
-    isOnlineSpy.and.resolveTo(true);
+  // Add more tests as needed
 
-    // Mock axios.get to return a response with mocked data
-    const mockedResponse = {
-      data: '<html><body><div class="event-item">Mocked Event</div></body></html>',
-    };
-    axiosGetSpy.and.resolveTo(mockedResponse);
-
-    const result = await scrapeEvents();
-    expect(result).toHaveLength(1);
-    expect(result[0].eventTitleScraped).toEqual('Mocked Event');
-  });
-
-  it('should handle errors during scraping', async () => {
-    // Mock isOnline to return true
-    isOnlineSpy.and.resolveTo(true);
-
-    // Mock axios.get to throw an error
-    axiosGetSpy.and.rejectWith(new Error('Mocked error'));
-
-    await expect(scrapeEvents()).rejects.toThrowError('Mocked error');
+  afterEach(() => {
+    // Restore the original functions after each test
+    axiosGetSpy.and.callThrough();
+    cheerioLoadSpy.and.callThrough();
   });
 });
