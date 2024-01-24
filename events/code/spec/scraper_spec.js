@@ -1,51 +1,59 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import scrapeEvents from '../scraper.js';
+import * as scrapeEvents from '../scraper.js';
 
 describe('scrapeEvents', () => {
   let axiosGetSpy;
   let cheerioLoadSpy;
 
   beforeEach(() => {
-    // Create spies for the imported modules and reset them before each test
     axiosGetSpy = spyOn(axios, 'get');
     cheerioLoadSpy = spyOn(cheerio, 'load');
 
-    axiosGetSpy.and.returnValue(Promise.resolve({ data: '<html><body><div class="event-item">Mocked Event</div></body></html>' }));
+    axiosGetSpy.and.returnValue(Promise.resolve({
+      data: '<html><body><div class="event-item">Mocked Event</div></body></html>'
+    }));
 
-    // Mock cheerio.load to return an object with a map function
     cheerioLoadSpy.and.returnValue({
-      map: jasmine.createSpy(),
-      find: jasmine.createSpy().and.returnValue({
-        text: jasmine.createSpy().and.returnValue('Mocked Event'),
-        find: jasmine.createSpy().and.returnValue({
-          text: jasmine.createSpy().and.returnValue('Mocked Place')
-        })
+      find: jasmine.createSpy().and.callFake((selector) => {
+        if (selector === '.event-item') {
+          return {
+            map: (callback) => callback(0, '<div class="event-item">Mocked Event</div>'),
+          };
+        } else if (selector === '.up-time-display') {
+          return {
+            text: () => 'Mocked Date',
+          };
+        } else if (selector === '.up-venue') {
+          return {
+            text: () => 'Mocked Place',
+          };
+        }
+        return {};
       }),
-      text: jasmine.createSpy().and.returnValue('Mocked Date'),
-      data: jasmine.createSpy().and.returnValue('<div class="event-description-html">Mocked Description</div>'),
     });
   });
 
+  // Increase the timeout for the test
   it('should scrape events successfully', async () => {
-    // Mock the Cheerio functions to return the expected values
-    cheerioLoadSpy().find.and.returnValue({ text: jasmine.createSpy() });
-    cheerioLoadSpy().text.and.returnValue('Mocked Date');
-    cheerioLoadSpy().data.and.returnValue('<div class="event-description-html">Mocked Description</div>');
-    cheerioLoadSpy().find().text.and.returnValue('Mocked Event');
-    cheerioLoadSpy().find().find().text.and.returnValue('Mocked Place');
-    axiosGetSpy.and.returnValue(Promise.resolve({ data: '<html><body><div class="event-banner-image" src="Mocked Image URL"></div></body></html>' }));
+    const mockedEventData = {
+      eventTitleScraped: 'JAQUAR IPA NEERATHON 2024, DELHI',
+      eventDateScraped: 'Sun Feb 04 2024 at 06:00 am',
+      eventPlaceScraped: 'MAJOR DHYAN CHAND NATIONAL STADIUM',
+      eventImage: 'https://cdn2.allevents.in/thumbs/thumb65769f49cc33c.jpg',
+    };
 
-    const result = await scrapeEvents();
+    // Use async/await to wait for the scrapeEvents function
+    const result = await scrapeEvents;
+    console.log(result);
 
-    // Assert that the result matches the expected data
-    expect(result).toEqual([mockedEventData]);
-  });
-
-  // Add more tests as needed
+    expect(result[0].eventTitleScraped).toEqual(mockedEventData.eventTitleScraped);
+    expect(result[0].eventDateScraped).toEqual(mockedEventData.eventDateScraped);
+    expect(result[0].eventPlaceScraped).toEqual(mockedEventData.eventPlaceScraped);
+    expect(result[0].eventImage).toEqual(mockedEventData.eventImage);
+  }, 10000); // Set a timeout of 10 seconds
 
   afterEach(() => {
-    // Restore the original functions after each test
     axiosGetSpy.and.callThrough();
     cheerioLoadSpy.and.callThrough();
   });

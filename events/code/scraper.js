@@ -37,17 +37,16 @@ const scrapeEvents = async () => new Promise(async (resolve, reject) => {
         eventImage: eventImage ? eventImage.trim() : undefined,
       };
 
-      // Log the working status
-      console.log("It's working");
-
       return eventData;
     }).get();
 
     const events = await Promise.all(eventPromises);
+    console.log(events[0].eventTitleScraped)
     resolve(events);
   } catch (error) {
     reject(error);
   }
 });
 
+scrapeEvents();
 export default scrapeEvents;
